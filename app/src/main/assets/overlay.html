@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:system-ui,sans-serif}
+body{margin:0;background:transparent}
+#p{background:rgba(12,6,7,.96);border:1px solid #7a1f26;border-radius:14px;overflow:hidden;box-shadow:0 0 18px #000}
+#h{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;background:#dc2626;color:#fff;font-size:12px;font-weight:700;letter-spacing:.6px}
+#h b{font-size:15px;padding:0 4px}
+#b{padding:9px 11px}
+.r{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #2a1216;color:#ddd;font-size:11px}
+.r:last-child{border:0}
+.s{width:38px;height:21px;border-radius:20px;background:#2a1417;position:relative;flex:none}
+.s:after{content:"";position:absolute;top:3px;left:3px;width:15px;height:15px;border-radius:50%;background:#777;transition:.15s}
+.r.on .s{background:#dc2626}
+.r.on .s:after{left:20px;background:#fff}
+#f{width:100%;margin:8px 0 2px}
+</style></head><body>
+<div id="p">
+  <div id="h"><span id="drag">DRAKO</span><b onclick="N('painel',false)">X</b></div>
+  <div id="b">
+    <div class="r" id="o_box" onclick="o('box',this)"><span>ESP BOX</span><div class="s"></div></div>
+    <div class="r" id="o_linha" onclick="o('linha',this)"><span>ESP LINHA</span><div class="s"></div></div>
+    <div class="r" id="o_vida" onclick="o('vida',this)"><span>ESP VIDA</span><div class="s"></div></div>
+    <div class="r" id="o_nome" onclick="o('nome',this)"><span>ESP NOME</span><div class="s"></div></div>
+    <div class="r" id="o_hs" onclick="o('hs',this)"><span>HS CABECA</span><div class="s"></div></div>
+    <div class="r" id="o_aimbot" onclick="o('aimbot',this)"><span>AIMBOT</span><div class="s"></div></div>
+    <div class="r on" id="o_fov" onclick="o('fov',this)"><span>EXIBIR FOV</span><div class="s"></div></div>
+    <input id="f" type="range" min="60" max="400" value="140" oninput="N('setFov',this.value)">
+  </div>
+</div>
+<script>
+const N=(a,b)=>window.N&&N[a](b);
+function o(n,el){el.classList.toggle('on');N('setOpt',n,el.classList.contains('on'));}
+
+let ax=0, ay=0, arrastando=false;
+const d=document.getElementById('drag');
+d.addEventListener('touchstart',e=>{arrastando=true;ax=e.touches[0].clientX;ay=e.touches[0].clientY;},{passive:true});
+d.addEventListener('touchmove',e=>{
+  if(!arrastando)return;
+  const x=e.touches[0].clientX, y=e.touches[0].clientY;
+  N('mover',Math.round(x-ax),Math.round(y-ay));
+  ax=x; ay=y;
+},{passive:true});
+d.addEventListener('touchend',()=>{arrastando=false;});
+</script></body></html>
