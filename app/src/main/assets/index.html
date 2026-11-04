@@ -1,0 +1,161 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#0a0506;color:#eee;font-family:system-ui,sans-serif;padding:14px}
+h1{font-size:19px;margin:0;color:#dc2626;letter-spacing:1px}
+.sub{font-size:11px;color:#8a8a8a;margin:2px 0 14px}
+.card{background:#150a0c;border:1px solid #3a1418;border-radius:12px;padding:12px;margin-bottom:10px}
+input{width:100%;padding:12px;border-radius:9px;border:1px solid #3a1418;background:#0f0708;color:#fff;font-size:14px}
+button{width:100%;padding:13px;border:0;border-radius:9px;background:#dc2626;color:#fff;font-weight:700;font-size:13px;letter-spacing:.5px;margin-top:8px}
+button.ghost{background:#1e1013;border:1px solid #3a1418;color:#ddd}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tabs div{flex:1;text-align:center;padding:10px;background:#150a0c;border:1px solid #3a1418;border-radius:9px;font-size:11px;color:#999}
+.tabs div.on{background:#dc2626;color:#fff;border-color:#dc2626}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #241012}
+.row:last-child{border:0}
+.row span{font-size:12px}
+.sw{width:44px;height:24px;border-radius:20px;background:#2a1417;position:relative;transition:.15s;flex:none}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#777;transition:.15s}
+.row.on .sw{background:#dc2626}
+.row.on .sw:after{left:23px;background:#fff}
+.hide{display:none}
+.bar{height:5px;background:#2a1417;border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:#dc2626;transition:.2s}
+pre{font-size:10px;background:#0f0708;padding:10px;border-radius:8px;white-space:pre-wrap;color:#9be89b;margin:8px 0 0;min-height:40px}
+#st,#st2{font-size:11px;margin-top:8px;color:#999}
+.err{color:#ff5c5c}
+input[type=range]{padding:0;background:none;border:0}
+</style></head><body>
+
+<h1>PROXY MENU DRAKO</h1>
+<div class="sub">KEY SYSTEM · SHIZUKU / ADB · SEM ROOT</div>
+
+<div id="scKey">
+  <div class="card">
+    <input id="inKey" placeholder="COLE SUA KEY">
+    <button onclick="validar()">VALIDAR KEY</button>
+    <div id="st"></div>
+  </div>
+</div>
+
+<div id="scApp" class="hide">
+  <div class="tabs">
+    <div class="on" onclick="aba(0,this)">PRINCIPAL</div>
+    <div onclick="aba(1,this)">BYPASS</div>
+    <div onclick="aba(2,this)">INFO</div>
+  </div>
+
+  <div id="t0">
+    <div class="card">
+      <button onclick="N('pedirPermissoes')">CONCEDER PERMISSOES</button>
+      <button class="ghost" onclick="conectar()">CONECTAR</button>
+      <div id="st2"></div>
+    </div>
+    <div class="card">
+      <button onclick="N('injetar')">INJETAR</button>
+      <div class="bar"><i id="pr"></i></div>
+      <button class="ghost" onclick="N('abrirFF')">ABRIR FREE FIRE</button>
+      <button class="ghost" onclick="N('removerInjecao')">REMOVER INJECAO</button>
+    </div>
+    <div class="card">
+      <div class="row" id="r_box" onclick="opt('box',this)"><span>ESP BOX</span><div class="sw"></div></div>
+      <div class="row" id="r_linha" onclick="opt('linha',this)"><span>ESP LINHA</span><div class="sw"></div></div>
+      <div class="row" id="r_vida" onclick="opt('vida',this)"><span>ESP VIDA</span><div class="sw"></div></div>
+      <div class="row" id="r_nome" onclick="opt('nome',this)"><span>ESP NOME</span><div class="sw"></div></div>
+      <div class="row" id="r_hs" onclick="opt('hs',this)"><span>HS CABECA</span><div class="sw"></div></div>
+      <div class="row" id="r_aimbot" onclick="opt('aimbot',this)"><span>AIMBOT AO ATIRAR</span><div class="sw"></div></div>
+      <div class="row on" id="r_fov" onclick="opt('fov',this)"><span>EXIBIR FOV</span><div class="sw"></div></div>
+    </div>
+    <div class="card">
+      <span style="font-size:12px">REGULAR FOV</span>
+      <input id="rg" type="range" min="60" max="400" value="140" oninput="N('setFov',this.value)">
+    </div>
+  </div>
+
+  <div id="t1" class="hide">
+    <div class="card">
+      <button onclick="N('bypass')">APLICAR BYPASS</button>
+      <button class="ghost" onclick="N('fecharFF')">FECHAR FREE FIRE</button>
+      <div class="bar"><i id="pr2"></i></div>
+    </div>
+  </div>
+
+  <div id="t2" class="hide">
+    <div class="card">
+      <button onclick="N('diagnostico')">RODAR TESTE</button>
+      <pre id="diag">aguardando</pre>
+    </div>
+    <div class="card">
+      <button class="ghost" onclick="sair()">SAIR DA KEY</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const N=(a,b)=>window.DrakoNative&&DrakoNative[a](b);
+const $=s=>document.querySelector(s);
+
+function aba(i,el){
+  document.querySelectorAll('.tabs div').forEach(d=>d.classList.remove('on'));
+  el.classList.add('on');
+  ['t0','t1','t2'].forEach((t,x)=>document.getElementById(t).classList.toggle('hide',x!==i));
+}
+
+function opt(n,el){
+  el.classList.toggle('on');
+  N('setOpt',n,el.classList.contains('on'));
+}
+
+function st(t,c){$('#st').textContent=t;$('#st').className=c||'';}
+function st2(t){$('#st2').textContent=t;}
+
+function validar(){
+  const k=$('#inKey').value.trim();
+  if(!k){st('DIGITE A KEY','err');return;}
+  st('VALIDANDO...');
+  N('verificarKey',k);
+}
+
+function conectar(){st2('CONECTANDO...');N('conectar');}
+
+function sair(){
+  localStorage.removeItem('drako');
+  N('sair');
+  $('#scKey').classList.remove('hide');
+  $('#scApp').classList.add('hide');
+}
+
+window.DRAKO={
+  onKeyResult(k,exp,erro){
+    if(erro){st(erro,'err');return;}
+    N('sessaoOk',k,exp);
+    entrar();
+  },
+  onConectado(ok,msg){st2(msg);},
+  onEstado(m,tem,perm){
+    if(!tem)st2('FREE FIRE NAO INSTALADO');
+    else if(!perm)st2('LIBERE SOBREPOSICAO EM CONCEDER PERMISSOES');
+    else st2('MODO: '+m.toUpperCase());
+  },
+  onProgress(p,e){
+    const b=$('#pr'); if(b)b.style.width=p+'%';
+    const c=$('#pr2'); if(c)c.style.width=p+'%';
+    if(e)st2(e);
+  },
+  onInjetado(ok){st2(ok?'INJETADO':'REMOVIDO');},
+  onDiag(t){$('#diag').textContent=t;},
+  onExpirado(m){alert(m);sair();}
+};
+
+function entrar(){
+  localStorage.setItem('drako','1');
+  $('#scKey').classList.add('hide');
+  $('#scApp').classList.remove('hide');
+  N('pedirEstado');
+  N('setOpt','fov',true);
+  setTimeout(()=>N('revalidar'), 1500);
+}
+
+if(localStorage.getItem('drako'))entrar();
+</script></body></html>
